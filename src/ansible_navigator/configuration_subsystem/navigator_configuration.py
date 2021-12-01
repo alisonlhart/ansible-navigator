@@ -151,6 +151,10 @@ navigator_subcommds = [
             " 'ansible-navigator run --help-playbook --mode stdout'"
         ),
     ),
+    SubCommand(
+        name="settings",
+        description="Review the current ansible-navigator settings",
+    ),
     SubCommand(name="welcome", description="Start at the welcome page"),
 ]
 
