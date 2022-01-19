@@ -184,7 +184,7 @@ class Action(App):
         """build the main menu of options"""
         return Step(
             name="all_options",
-            columns=["option", "__default", "source", "via", "__current_value"],
+            columns=["option", "default", "source", "via", "__current_value"],
             select_func=self._build_option_content,
             tipe="menu",
             value=self._config,
