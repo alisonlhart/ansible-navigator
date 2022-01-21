@@ -20,13 +20,12 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from . import run_action
 from . import _actions as actions
-
-from ..runner import CommandAsync
+from . import run_action
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
+from ..runner import CommandAsync
 from ..steps import Step
 from ..ui_framework import CursesLinePart
 from ..ui_framework import CursesLines
@@ -34,8 +33,6 @@ from ..ui_framework import Interaction
 from ..ui_framework import dict_to_form
 from ..ui_framework import form_to_dict
 from ..ui_framework import warning_notification
-
-
 from ..utils import abs_user_path
 from ..utils import human_time
 from ..utils import remove_ansi
@@ -260,9 +257,9 @@ class Action(App):
         """run :run or :replay
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
+        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction` or
+            :data:`None`
         """
 
         self._prepare_to_run(app, interaction)

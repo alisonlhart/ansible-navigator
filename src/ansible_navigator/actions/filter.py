@@ -1,5 +1,6 @@
 """:filter"""
 import logging
+
 from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -23,9 +24,7 @@ class Action:
         """Handle :filter
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
         """
         self._logger.debug("filter requested")
         menu_filter = interaction.action.match.groupdict()["regex"]

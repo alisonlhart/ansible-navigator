@@ -2,14 +2,13 @@
 """
 import ast
 import decimal
-import logging
 import html
+import logging
 import os
 import re
 import shutil
 import sys
 import sysconfig
-
 
 from enum import Enum
 from types import SimpleNamespace
@@ -444,9 +443,8 @@ def templar(string: str, template_vars: Mapping) -> Tuple[List[str], Any]:
     always to and from json so we return an object if it is
 
     :param string: The template string
-    :type string: str
     :param template_vars: The vars used to render the template
-    :type template_vars: dict
+    :return: A list of errors and either the result of templating or original string
     """
     errors = []
     # hide the jinja that may be in the template_vars

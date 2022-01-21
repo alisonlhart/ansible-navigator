@@ -5,12 +5,11 @@ from collections.abc import Mapping
 from typing import Union
 
 from . import _actions as actions
-
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
-from ..ui_framework import warning_notification
 from ..ui_framework import Interaction
+from ..ui_framework import warning_notification
 from ..utils import remove_dbl_un
 from ..utils import templar
 
@@ -30,9 +29,9 @@ class Action(App):
         """Handle :{{ }}
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
+        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction` or
+            :data:`None`
         """
         self._logger.debug("template requested '%s'", interaction.action.value)
         self._prepare_to_run(app, interaction)

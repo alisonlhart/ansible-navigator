@@ -4,23 +4,20 @@ import json
 import shlex
 
 from functools import partial
-
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Tuple
 from typing import Union
 
-from . import run_action
 from . import _actions as actions
-
+from . import run_action
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..image_manager import inspect_all
 from ..runner import Command
 from ..steps import Step
-
 from ..ui_framework import CursesLinePart
 from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
@@ -115,9 +112,9 @@ class Action(App):
         """Handle :images
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
+        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction` or
+            :data:`None`
         """
         self._logger.debug("images requested")
         self._prepare_to_run(app, interaction)

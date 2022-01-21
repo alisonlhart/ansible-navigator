@@ -1,5 +1,4 @@
-""" tests for the utilities in utils
-"""
+"""Test the functions exposed in the :mod:`~ansible_navigator.utils` subpackage."""
 import os
 
 from typing import List
@@ -10,6 +9,7 @@ from typing import Union
 import pytest
 
 from ansible_navigator import utils
+
 
 EXTENSIONS = [".yml", ".yaml", ".json"]
 

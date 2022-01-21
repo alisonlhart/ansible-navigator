@@ -1,13 +1,14 @@
 """:quit
 """
 from . import _actions as actions
+from .._yaml import yaml
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
 from ..ui_framework import dict_to_form
 from ..ui_framework import form_to_dict
-from .._yaml import yaml
+
 
 FORM = """
 form:
@@ -99,9 +100,8 @@ class Action(App):
         """Handle :doc
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
+        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction`
         """
         self._logger.debug("sample form requested")
         self._prepare_to_run(app, interaction)

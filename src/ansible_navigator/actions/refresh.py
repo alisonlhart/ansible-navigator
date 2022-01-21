@@ -1,5 +1,6 @@
 """refresh"""
 import logging
+
 from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -23,9 +24,7 @@ class Action:
         """Handle :refresh
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
         """
         # Just in case the user switched tasks with +,- etc
         # change previous, since this interaction is on the stack

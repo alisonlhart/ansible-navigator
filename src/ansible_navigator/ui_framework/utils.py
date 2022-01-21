@@ -2,8 +2,8 @@
 """
 import functools
 import re
-from math import floor
 
+from math import floor
 from typing import List
 
 
@@ -12,12 +12,9 @@ def convert_percentage(dyct: dict, keys: List, pbar_width: int) -> None:
     not recursive
     80% = 80%|XXXXXXXX  |
 
-    :param dicts: a list of dictionaries
-    :type dicts: list[dict]
+    :param dyct: The dictionary to update
     :param keys: The keys to convert in each dictionary
-    :type keys: List[str]
     :param pbar_width: The width of the progress bar
-    :type pbar_width: int
     """
     for key in keys:
         value = dyct.get(key)

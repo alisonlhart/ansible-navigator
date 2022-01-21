@@ -1,5 +1,6 @@
 """:yaml"""
 import logging
+
 from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -23,7 +24,7 @@ class Action:
         """Handle :yaml
 
         :param interaction: The interaction from the user, action and value
-        :type interaction: dict
+        :param app: The app instance
         """
         self._logger.debug("yaml requested")
         if interaction.ui is not None:

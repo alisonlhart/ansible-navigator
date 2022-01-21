@@ -8,18 +8,17 @@ import shutil
 
 from typing import Any
 from typing import Dict
-from typing import Tuple
 from typing import Optional
+from typing import Tuple
 from typing import Union
-from . import _actions as actions
 
+from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..configuration_subsystem import Constants as C
-from ..runner import Command
 from ..runner import AnsibleDoc
-
+from ..runner import Command
 from ..ui_framework import CursesLinePart
 from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
@@ -64,9 +63,9 @@ class Action(App):
         """Handle :doc
 
         :param interaction: The interaction from the user
-        :type interaction: Interaction
         :param app: The app instance
-        :type app: App
+        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction` or
+            :data:`None`
         """
         self._logger.debug("doc requested in interactive")
         self._prepare_to_run(app, interaction)
