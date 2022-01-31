@@ -21,7 +21,6 @@ from .utils import LogMessage
 
 
 class App:
-    # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-instance-attributes
     """Base class for apps (actions)."""
 
@@ -87,7 +86,7 @@ class App:
                 "[HINT] Start an additional instance of ansible-navigator"
                 + " in a new terminal with mode 'stdout'.",
                 f"      e.g. 'ansible-navigator {self._name} --mode stdout",
-            ]
+            ],
         )
         interaction.ui.show(warning)
 
@@ -147,7 +146,10 @@ class App:
         """
 
     def _update_args(
-        self, params: List, apply_previous_cli_entries: C = C.ALL, attach_cdc: bool = False
+        self,
+        params: List,
+        apply_previous_cli_entries: C = C.ALL,
+        attach_cdc: bool = False,
     ) -> None:
         """Update the current args.
 

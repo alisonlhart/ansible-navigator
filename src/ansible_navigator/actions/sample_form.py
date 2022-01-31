@@ -1,6 +1,5 @@
 """:quit
 """
-from . import _actions as actions
 from .._yaml import yaml
 from ..app import App
 from ..app_public import AppPublic
@@ -8,6 +7,7 @@ from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
 from ..ui_framework import dict_to_form
 from ..ui_framework import form_to_dict
+from . import _actions as actions
 
 
 FORM = """
@@ -88,14 +88,15 @@ form:
 class Action(App):
     """handle :sample_form"""
 
-    # pylint: disable=too-few-public-methods
-
     KEGEX = r"^sample_form$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:sample_form`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="sample_form")
 
-    # pylint: disable=unused-argument
     def run(self, interaction: Interaction, app: AppPublic) -> Interaction:
         """Handle :doc
 

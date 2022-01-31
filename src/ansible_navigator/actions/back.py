@@ -1,11 +1,11 @@
 """ESC, (step back)"""
 import logging
 
-from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..steps import Step
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
@@ -17,6 +17,10 @@ class Action:
     KEGEX = r"^\^\[|\x1b|back$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:back`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 
@@ -37,7 +41,10 @@ class Action:
                 if step.type == "menu" and app.steps.current.type == "menu":
                     interaction.ui.menu_filter(None)
             self._logger.debug(
-                "Stepping back in %s from %s to %s", app.name, step.name, app.steps.current.name
+                "Stepping back in %s from %s to %s",
+                app.name,
+                step.name,
+                app.steps.current.name,
             )
         else:
             self._logger.debug("Return to %s, at last step", app.name)

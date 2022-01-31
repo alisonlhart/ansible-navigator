@@ -12,7 +12,6 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -22,17 +21,20 @@ from ..runner import Command
 from ..ui_framework import CursesLinePart
 from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
 class Action(App):
     """:doc"""
 
-    # pylint:disable=too-few-public-methods
-
     KEGEX = r"^d(?:oc)?(\s(?P<params>.*))?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:doc`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="doc")
 
         self._plugin_name: Optional[str]
@@ -59,7 +61,6 @@ class Action(App):
         return heading
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
-        # pylint: disable=too-many-branches
         """Handle :doc
 
         :param interaction: The interaction from the user
@@ -71,7 +72,7 @@ class Action(App):
         self._prepare_to_run(app, interaction)
 
         self._update_args(
-            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or "")
+            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or ""),
         )
 
         plugin_name_source = self._args.entry("plugin_name").value.source
@@ -112,7 +113,8 @@ class Action(App):
         while True:
             app.update()
             next_interaction: Interaction = interaction.ui.show(
-                content_heading=self.generate_content_heading, obj=plugin_doc
+                content_heading=self.generate_content_heading,
+                obj=plugin_doc,
             )
             if next_interaction.name != "refresh":
                 break
@@ -158,7 +160,7 @@ class Action(App):
 
         if isinstance(self._args.execution_environment_volume_mounts, list):
             kwargs.update(
-                {"container_volume_mounts": self._args.execution_environment_volume_mounts}
+                {"container_volume_mounts": self._args.execution_environment_volume_mounts},
             )
 
         if isinstance(self._args.container_options, list):
@@ -178,7 +180,9 @@ class Action(App):
             self._logger.debug("doc playbook dir set to: %s", playbook_dir)
 
             plugin_doc, plugin_doc_err = self._runner.fetch_plugin_doc(
-                [self._plugin_name], plugin_type=self._plugin_type, playbook_dir=playbook_dir
+                [self._plugin_name],
+                plugin_type=self._plugin_type,
+                playbook_dir=playbook_dir,
             )
             if plugin_doc_err:
                 self._logger.error(
@@ -220,7 +224,9 @@ class Action(App):
             return stdout_return
 
     def _extract_plugin_doc(
-        self, out: Union[Dict[Any, Any], str], err: Union[Dict[Any, Any], str]
+        self,
+        out: Union[Dict[Any, Any], str],
+        err: Union[Dict[Any, Any], str],
     ) -> Optional[Dict[Any, Any]]:
         # pylint: disable=too-many-branches
         plugin_doc = {}
@@ -238,7 +244,8 @@ class Action(App):
                 except json.JSONDecodeError as exc:
                     if self._args.mode == "interactive":
                         self._logger.info(
-                            "Parsing of ansible-doc output failed for '%s'", self._plugin_name
+                            "Parsing of ansible-doc output failed for '%s'",
+                            self._plugin_name,
                         )
                     self._logger.debug("json decode error: %s", str(exc))
                     self._logger.debug("tried: %s", out)

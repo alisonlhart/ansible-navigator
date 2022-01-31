@@ -9,10 +9,10 @@ from typing import Dict
 from typing import Tuple
 from typing import Union
 
-from .definitions import ApplicationConfiguration
-from .definitions import Constants as C
 from .._version import __version__
 from ..utils import oxfordcomma
+from .definitions import ApplicationConfiguration
+from .definitions import Constants as C
 
 
 class Parser:
@@ -20,6 +20,10 @@ class Parser:
 
     # pylint: disable=too-few-public-methods
     def __init__(self, config: ApplicationConfiguration):
+        """Initialize the command line interface parameter parser.
+
+        :param config: The current settings for the application
+        """
         self._config = config
         self._base_parser = ArgumentParser(add_help=False)
         self._configure_base()
@@ -86,7 +90,9 @@ class Parser:
 
     def _configure_base(self) -> None:
         self._base_parser.add_argument(
-            "--version", action="version", version="%(prog)s " + __version__
+            "--version",
+            action="version",
+            version="%(prog)s " + __version__,
         )
 
         for entry in self._config.entries:

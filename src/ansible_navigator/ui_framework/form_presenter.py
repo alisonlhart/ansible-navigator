@@ -35,13 +35,18 @@ TPAD_RATIO = 2 / 5
 BUTTON_SPACE = 10
 
 
-# pylint: disable=no-member
 class FormPresenter(CursesWindow):
     """present the form to the user"""
 
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
     def __init__(self, form, screen, ui_config):
+        """Initialize the form presenter.
+
+        :param form: The form to present to the user
+        :param screen: A curses window
+        :param ui_config: The current user interface configuration
+        """
         super().__init__(ui_config=ui_config)
         self._form = form
         self._screen = screen
@@ -158,9 +163,10 @@ class FormPresenter(CursesWindow):
             window = curses.newwin(1, len(string), self._line_number, far_right + self._pad_left)
             window.keypad(True)
             form_field.win = window
-            form_field.conditional_validation(
-                (f.valid for f in self._form.fields if not isinstance(f, FieldButton))
-            )
+            form_validity_state = [
+                f.valid for f in self._form.fields if not isinstance(f, FieldButton)
+            ]
+            form_field.conditional_validation(form_validity_state)
             if form_field.disabled is True:
                 color = 8
             else:
@@ -179,7 +185,10 @@ class FormPresenter(CursesWindow):
     def _generate_field_options(self, form_field) -> CursesLine:
         lines = []
         window = curses.newwin(
-            len(form_field.options), self._field_win_width, self._line_number, self._field_win_start
+            len(form_field.options),
+            self._field_win_width,
+            self._line_number,
+            self._field_win_start,
         )
         window.keypad(True)
         form_field.win = window
@@ -250,7 +259,8 @@ class FormPresenter(CursesWindow):
         shared_input_line_cache: List[str] = []
         for form_field in self._form.fields:
             form_field.window_handler = form_field.window_handler(
-                screen=self._screen, ui_config=self._ui_config
+                screen=self._screen,
+                ui_config=self._ui_config,
             )
             if isinstance(form_field.window_handler, FormHandlerText):
                 form_field.window_handler.input_line_cache = shared_input_line_cache

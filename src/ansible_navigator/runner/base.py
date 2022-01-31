@@ -21,7 +21,6 @@ from ansible_runner import Runner  # type: ignore[import]
 class Base:
     """Base class"""
 
-    # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-instance-attributes
     def __init__(
@@ -113,7 +112,7 @@ class Base:
                     "container_volume_mounts": container_volume_mounts,
                     "container_options": container_options,
                     "container_workdir": container_workdir,
-                }
+                },
             )
         self._runner_args.update(
             {
@@ -124,7 +123,7 @@ class Base:
                 "finished_callback": self.runner_finished_callback,
                 "artifacts_handler": self.runner_artifacts_handler,
                 "timeout": self._timeout,
-            }
+            },
         )
         if self._rotate_artifacts is not None:
             self._runner_args["rotate_artifacts"] = self._rotate_artifacts
@@ -138,7 +137,7 @@ class Base:
 
         if self._navigator_mode == "stdout":
             self._runner_args.update(
-                {"input_fd": sys.stdin, "output_fd": sys.stdout, "error_fd": sys.stderr}
+                {"input_fd": sys.stdin, "output_fd": sys.stdout, "error_fd": sys.stderr},
             )
 
     def __del__(self):
@@ -150,7 +149,8 @@ class Base:
         ):
 
             self._logger.debug(
-                "delete ansible-runner artifact directory at path %s", self._runner_artifact_dir
+                "delete ansible-runner artifact directory at path %s",
+                self._runner_artifact_dir,
             )
             shutil.rmtree(self._runner_artifact_dir, ignore_errors=True)
 

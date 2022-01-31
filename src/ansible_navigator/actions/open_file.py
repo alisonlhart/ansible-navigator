@@ -10,13 +10,13 @@ from typing import Callable
 from typing import Dict
 from typing import List
 
-from . import _actions as actions
 from .._yaml import human_dump
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
 from ..ui_framework import Menu
 from ..utils import remove_dbl_un
+from . import _actions as actions
 
 
 class SuspendCurses:
@@ -40,6 +40,10 @@ class Action:
     KEGEX = r"^o(?:pen)?(\s(?P<something>.*))?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:open`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 
@@ -52,7 +56,6 @@ class Action:
             obj = [e for e in obj if menu_filter().search(" ".join(str(v) for v in e.values()))]
         return obj
 
-    # pylint: disable=too-many-branches
     def run(self, interaction: Interaction, app: AppPublic) -> None:
         # pylint: disable=too-many-branches
         # pylint: disable=unused-argument

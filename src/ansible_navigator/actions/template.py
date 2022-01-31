@@ -4,7 +4,6 @@ import html
 from collections.abc import Mapping
 from typing import Union
 
-from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -12,17 +11,20 @@ from ..ui_framework import Interaction
 from ..ui_framework import warning_notification
 from ..utils import remove_dbl_un
 from ..utils import templar
+from . import _actions as actions
 
 
 @actions.register
 class Action(App):
     """{{ }}"""
 
-    # pylint: disable=too-few-public-methods
-
     KEGEX = r"^{{.*}}$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the template action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="template")
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
@@ -67,7 +69,8 @@ class Action(App):
         interaction.ui.scroll(0)
 
         errors, templated = templar(
-            string=str(interaction.action.value), template_vars=template_vars
+            string=str(interaction.action.value),
+            template_vars=template_vars,
         )
         if errors:
             msgs = ["Errors encountered while templating input"] + errors

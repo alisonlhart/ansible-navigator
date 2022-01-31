@@ -12,6 +12,8 @@ maintain it and you contribute.
 
 3. code-spell (prevents typos in code)
 
+4. isort (sorts import statements)
+
 ```{note}
 In early development cycles, a decision was made to use black as a formatter
 which is why current pull-requests are required to pass a
@@ -56,27 +58,33 @@ Prerequisites:
    congratulations :)
    ```
 
+   ```{tip}
+   Because the version of python is pinned to a specific version to ensure the
+   outcome of running `tox -e lint` locally is the same as `tox -e lint` being run
+   by github actions, you may see the following error: `RuntimeError: failed to
+   find interpreter for Builtin discover of python_spec='python3.XX'`. This
+   indicates the version of python that needs to be installed for tox to run
+   locally.
+   ```
+
 4. We also suggest you to _optionally_ run the following check that is
-   not yet enforced (meaning you can skip it, especially since it's
-   annoyingly slow):
+   not yet enforced (meaning you can skip it):
 
    ```shell-session
-   $ tox -e lint-vetting
-   lint-vetting create: .tox/lint-vetting
-   lint-vetting installdeps: pre-commit, pylint ~= 2.8.0, pylint-pytest < 1.1.0
-   lint-vetting installed: ...
-   lint-vetting run-test-pre: PYTHONHASHSEED='2351399476'
-   lint-vetting run-test: commands[0] | python -m pre_commit run ...--all-files
+   $ tox -e lint-candidates
+   lint-candidates create: .tox/lint-candidates
+   lint-candidates installdeps: pre-commit
+   lint-candidates installed: ...
+   lint-candidates run-test-pre: PYTHONHASHSEED='2351399476'
+   lint-candidates run-test: commands[0] | python -m pre_commit run ...--all-files
    ...
-   [INFO] Initializing environment for https://github.com/asottile/add-trail...
-   ...
-   [INFO] Installing environment for https://github.com/asottile/add-trailin...
+   [INFO] Installing environment for https://github.com/PyCQA/flake8.git
    [INFO] Once installed this environment will be reused.
    [INFO] This may take a few minutes...
    ...
-   Add trailing commas...............................(no files to check)Skipped
-   - hook id: add-trailing-comma
+   An unenforced set of flake8 candidate rule candidates.................Passed
+   - hook id: flake8
    ...
    _________________________________ summary __________________________________
-   ERROR:   lint-vetting: commands failed
+   ERROR:   lint-candidates: commands failed
    ```

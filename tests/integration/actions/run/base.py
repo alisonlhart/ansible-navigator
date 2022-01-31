@@ -8,12 +8,12 @@ from typing import Optional
 
 import pytest
 
+from ....defaults import FIXTURES_DIR
 from ..._common import fixture_path_from_request
 from ..._common import update_fixtures
 from ..._interactions import SearchFor
 from ..._interactions import Step
 from ..._tmux_session import TmuxSession
-from ....defaults import FIXTURES_DIR
 
 
 # run playbook
@@ -119,5 +119,5 @@ class BaseClass:
                 expected_output = json.load(infile)["output"]
 
             assert expected_output == received_output, "\n" + "\n".join(
-                difflib.unified_diff(expected_output, received_output, "expected", "received")
+                difflib.unified_diff(expected_output, received_output, "expected", "received"),
             )

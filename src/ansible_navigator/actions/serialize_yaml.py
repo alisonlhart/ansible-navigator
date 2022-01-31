@@ -1,10 +1,10 @@
 """:yaml"""
 import logging
 
-from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
@@ -16,6 +16,10 @@ class Action:
     KEGEX = r"^y(?:aml)?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:yaml`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 

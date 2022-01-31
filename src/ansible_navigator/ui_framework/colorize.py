@@ -11,10 +11,10 @@ import re
 
 from itertools import chain
 
-from .curses_defs import CursesLine
-from .curses_defs import CursesLinePart
 from ..tm_tokenize.grammars import Grammars
 from ..tm_tokenize.tokenize import tokenize
+from .curses_defs import CursesLine
+from .curses_defs import CursesLinePart
 
 
 CURSES_STYLES = {
@@ -56,7 +56,8 @@ class ColorSchema:
             for parts in range(0, len(name.split("."))):
                 prop = name.split()[-1].rsplit(".", parts)[0]
                 color = next(
-                    (tc for tc in self._schema["tokenColors"] if prop in to_list(tc["scope"])), None
+                    (tc for tc in self._schema["tokenColors"] if prop in to_list(tc["scope"])),
+                    None,
                 )
                 if color:
                     foreground = color.get("settings", {}).get("foreground", None)
@@ -69,6 +70,11 @@ class Colorize:
 
     # pylint: disable=too-few-public-methods
     def __init__(self, grammar_dir: str, theme_path: str):
+        """Initialize the colorizer.
+
+        :param grammar_dir: The directory in which the grammars reside
+        :param theme_path: The path to the currently configured color theme
+        """
         self._logger = logging.getLogger(__name__)
         self._schema = None
         self._grammars = Grammars(grammar_dir)
@@ -109,10 +115,12 @@ class Colorize:
                         (
                             "An unexpected error occurred within the tokenization"
                             " subsystem.  Please log an issue with the following:"
-                        )
+                        ),
                     )
                     self._logger.critical(
-                        "  Err: '%s', Scope: '%s', Line follows....", str(exc), scope
+                        "  Err: '%s', Scope: '%s', Line follows....",
+                        str(exc),
+                        scope,
                     )
                     self._logger.critical("  '%s'", line)
                     self._logger.critical("  The current content will be rendered without color")
@@ -252,9 +260,6 @@ def columns_and_colors(lines, schema):
 
 
 def ansi_to_curses(line: str) -> CursesLine:
-
-    # pylint: disable=too-many-branches
-    # pylint: disable=too-many-locals
     """Convert ansible color codes to curses colors
 
     :param line: A string with ansi colors
@@ -270,7 +275,7 @@ def ansi_to_curses(line: str) -> CursesLine:
             (?P<one>\d+)                        # required, one number
             (;(?P<two>\d+))?                    # optional 2nd number
             m
-        """
+        """,
     )
     parts = ansi_regex.split(line)
     colno = 0
@@ -301,7 +306,10 @@ def ansi_to_curses(line: str) -> CursesLine:
                         style = CURSES_STYLES.get(int(one), None) or 0
             else:
                 curses_line = CursesLinePart(
-                    column=colno, string=part, color=color, decoration=style
+                    column=colno,
+                    string=part,
+                    color=color,
+                    decoration=style,
                 )
                 printable.append(curses_line)
                 colno += len(part)

@@ -2,10 +2,10 @@
 """
 import logging
 
-from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
@@ -17,6 +17,10 @@ class Action:
     KEGEX = r"q(?:uit)?(?P<exclamation>!)?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:quit`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 

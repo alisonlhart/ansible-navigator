@@ -1,20 +1,22 @@
 """:log"""
-from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
 class Action(App):
     """:log"""
 
-    # pylint: disable=too-few-public-methods
-
     KEGEX = r"^l(?:og)?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:exec`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="log")
 
     def run(self, interaction: Interaction, app: AppPublic) -> Interaction:
