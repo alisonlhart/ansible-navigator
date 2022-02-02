@@ -18,8 +18,19 @@ repos:
   - id: isort
     name: Sort import statements using isort
 
+- repo: https://github.com/psf/black.git
+  rev: 22.1.0
+  hooks:
+    - id: black
+      language_version: python3
+      args:
+      - -v
+      - --diff
+      - --check
+      - .
+
 - repo: https://github.com/Lucas-C/pre-commit-hooks.git
-  rev: v1.1.10
+  rev: v1.1.11
   hooks:
   - id: remove-tabs
     exclude: |
@@ -291,9 +302,8 @@ repos:
     - jinja2
     - libtmux
     - onigurumacffi
-    - pylint-pytest < 1.1.0
+    - pytest
     - setuptools-scm
     - sphinx
     pass_filenames: false
-
 ...
