@@ -12,8 +12,6 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from . import _actions as actions
-from . import run_action
 from .._yaml import Loader
 from .._yaml import yaml
 from ..app import App
@@ -27,6 +25,8 @@ from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
 from ..ui_framework import nonblocking_notification
 from ..ui_framework import warning_notification
+from . import _actions as actions
+from . import run_action
 
 
 def color_menu(colno: int, colname: str, entry: Dict[str, Any]) -> Tuple[int, int]:
@@ -68,9 +68,9 @@ def content_heading(obj: Any, screen_w: int) -> Union[CursesLines, None]:
                     string=string,
                     color=color,
                     decoration=curses.A_UNDERLINE,
-                )
-            ]
-        )
+                ),
+            ],
+        ),
     )
     return tuple(heading)
 
@@ -84,18 +84,19 @@ def filter_content_keys(obj: Dict[Any, Any]) -> Dict[Any, Any]:
 class Action(App):
     """:doc"""
 
-    # pylint:disable=too-few-public-methods
-
     KEGEX = r"^config(\s(?P<params>.*))?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:config`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="config")
 
         self._config: Union[List[Any], None] = None
         self._runner: Union[AnsibleConfig, Command]
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
-        # pylint: disable=too-many-branches
         """Handle :doc
 
         :param interaction: The interaction from the user
@@ -109,12 +110,12 @@ class Action(App):
         notification = nonblocking_notification(
             messages=[
                 "Collecting the ansible configuration, this may take a minute...",
-            ]
+            ],
         )
         interaction.ui.show(notification)
 
         self._update_args(
-            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or "")
+            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or ""),
         )
 
         self._run_runner()
@@ -223,7 +224,7 @@ class Action(App):
 
         if isinstance(self._args.execution_environment_volume_mounts, list):
             kwargs.update(
-                {"container_volume_mounts": self._args.execution_environment_volume_mounts}
+                {"container_volume_mounts": self._args.execution_environment_volume_mounts},
             )
 
         if isinstance(self._args.container_options, list):
@@ -287,7 +288,6 @@ class Action(App):
         """yaml load the list, and parse the dump
         merge dump int list
         """
-        # pylint: disable=too-many-branches
         try:
             parsed = yaml.load(list_output, Loader=Loader)
             self._logger.debug("yaml loading list output succeeded")

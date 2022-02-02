@@ -13,8 +13,6 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
-from . import _actions as actions
-from . import run_action
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -25,6 +23,8 @@ from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
 from ..ui_framework import nonblocking_notification
 from ..ui_framework import warning_notification
+from . import _actions as actions
+from . import run_action
 
 
 def color_menu(colno: int, colname: str, entry: Dict[str, Any]) -> Tuple[int, int]:
@@ -61,9 +61,9 @@ def content_heading(obj: Any, screen_w: int) -> Union[CursesLines, None]:
                     string=string,
                     color=2,
                     decoration=curses.A_UNDERLINE,
-                )
-            ]
-        )
+                ),
+            ],
+        ),
     )
     return tuple(heading)
 
@@ -77,12 +77,13 @@ def filter_content_keys(obj: Dict[Any, Any]) -> Dict[Any, Any]:
 class Action(App):
     """:doc"""
 
-    # pylint:disable=too-few-public-methods
-    # pylint:disable=too-many-instance-attributes
-
     KEGEX = r"^collections(\s(?P<params>.*))?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:collections`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="collections")
         self._adjacent_collection_dir: str
         self._collection_cache: Dict
@@ -95,7 +96,6 @@ class Action(App):
         self._calling_app.update()
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
-        # pylint: disable=too-many-branches
         """Handle :doc
 
         :param interaction: The interaction from the user
@@ -110,12 +110,12 @@ class Action(App):
         notification = nonblocking_notification(
             messages=[
                 "Collecting collection content, this may take a minute the first time...",
-            ]
+            ],
         )
         interaction.ui.show(notification)
 
         params = [self._name] + shlex.split(
-            self._interaction.action.match.groupdict()["params"] or ""
+            self._interaction.action.match.groupdict()["params"] or "",
         )
 
         self._update_args(params=params, attach_cdc=True)
@@ -280,7 +280,7 @@ class Action(App):
 
         if isinstance(self._args.execution_environment_volume_mounts, list):
             kwargs.update(
-                {"container_volume_mounts": self._args.execution_environment_volume_mounts}
+                {"container_volume_mounts": self._args.execution_environment_volume_mounts},
             )
 
         if isinstance(self._args.container_options, list):
@@ -308,11 +308,11 @@ class Action(App):
             container_volume_mounts = [f"{share_directory}/utils:{share_directory}/utils"]
             if os.path.exists(self._adjacent_collection_dir):
                 container_volume_mounts.append(
-                    f"{self._adjacent_collection_dir}:{self._adjacent_collection_dir}:z"
+                    f"{self._adjacent_collection_dir}:{self._adjacent_collection_dir}:z",
                 )
 
             container_volume_mounts.append(
-                f"{self._collection_cache_path}:{self._collection_cache_path}:z"
+                f"{self._collection_cache_path}:{self._collection_cache_path}:z",
             )
             kwargs.update({"container_volume_mounts": container_volume_mounts})
 
@@ -321,7 +321,7 @@ class Action(App):
             python_exec_path = sys.executable
 
         self._logger.debug(
-            f"Invoke runner with executable_cmd: {python_exec_path}" + f" and kwargs: {kwargs}"
+            f"Invoke runner with executable_cmd: {python_exec_path}" + f" and kwargs: {kwargs}",
         )
         _runner = Command(executable_cmd=python_exec_path, **kwargs)
         output, error, _ = _runner.run()
@@ -355,7 +355,8 @@ class Action(App):
             self._logger.error("%s %s", error["path"], error["error"])
 
         self._collections = sorted(
-            list(parsed["collections"].values()), key=lambda i: i["known_as"]
+            list(parsed["collections"].values()),
+            key=lambda i: i["known_as"],
         )
         for collection in self._collections:
             collection["__name"] = collection["known_as"]

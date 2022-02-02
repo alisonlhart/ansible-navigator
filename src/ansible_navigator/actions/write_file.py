@@ -4,12 +4,12 @@ import logging
 import os
 import re
 
-from . import _actions as actions
 from .._yaml import human_dump
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
 from ..utils import remove_dbl_un
+from . import _actions as actions
 
 
 @actions.register
@@ -21,6 +21,10 @@ class Action:
     KEGEX = r"^w(?:rite)?(?P<force>!)?\s+(?P<append>>>)?\s*(?P<filename>.+)$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:write`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 
@@ -38,14 +42,16 @@ class Action:
         if match["append"]:
             if not os.path.exists(filename) and not match["force"]:
                 self._logger.warning(
-                    "Append operation failed because %s does not exist, force with !", filename
+                    "Append operation failed because %s does not exist, force with !",
+                    filename,
                 )
                 return None
             fmode = "a"
         else:
             if os.path.exists(filename) and not match["force"]:
                 self._logger.warning(
-                    "Write operation failed because %s exists, force with !", filename
+                    "Write operation failed because %s exists, force with !",
+                    filename,
                 )
                 return None
             fmode = "w"

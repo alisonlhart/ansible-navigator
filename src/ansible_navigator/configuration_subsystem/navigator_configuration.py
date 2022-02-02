@@ -9,6 +9,12 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
+from .._version import __version__ as VERSION
+from ..utils import ExitMessage
+from ..utils import LogMessage
+from ..utils import abs_user_path
+from ..utils import get_share_directory
+from ..utils import oxfordcomma
 from .definitions import ApplicationConfiguration
 from .definitions import CliParameters
 from .definitions import Constants as C
@@ -16,12 +22,6 @@ from .definitions import SettingsEntry
 from .definitions import SettingsEntryValue
 from .definitions import SubCommand
 from .navigator_post_processor import NavigatorPostProcessor
-from .._version import __version__ as VERSION
-from ..utils import ExitMessage
-from ..utils import LogMessage
-from ..utils import abs_user_path
-from ..utils import get_share_directory
-from ..utils import oxfordcomma
 
 
 APP_NAME = "ansible_navigator"
@@ -90,6 +90,8 @@ class Internals(SimpleNamespace):
     collection_doc_cache: Union[C, Dict] = C.NOT_SET
     initialization_exit_messages = initialization_exit_messages
     initialization_messages = initialization_messages
+    settings_file_path: Union[None, str] = None
+    settings_source: C = C.NOT_SET
     share_directory: str = generate_share_directory()
 
 
@@ -439,7 +441,7 @@ NavigatorConfiguration = ApplicationConfiguration(
             short_description="Specify the name for artifacts created from completed playbooks",
             subcommands=["run"],
             value=SettingsEntryValue(
-                default="{playbook_dir}/{playbook_name}-artifact-{ts_utc}.json"
+                default="{playbook_dir}/{playbook_name}-artifact-{ts_utc}.json",
             ),
         ),
         SettingsEntry(

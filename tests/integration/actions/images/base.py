@@ -6,12 +6,12 @@ import os
 
 import pytest
 
+from ....defaults import DEFAULT_CONTAINER_IMAGE
 from ..._common import fixture_path_from_request
 from ..._common import update_fixtures
 from ..._interactions import SearchFor
 from ..._interactions import Step
 from ..._tmux_session import TmuxSession
-from ....defaults import DEFAULT_CONTAINER_IMAGE
 
 
 IMAGE_SHORT = DEFAULT_CONTAINER_IMAGE.rsplit("/", maxsplit=1)[-1].split(":")[0]
@@ -21,7 +21,9 @@ step_back = Step(user_input=":back", comment="goto info menu", look_fors=["Every
 
 base_steps = (
     Step(
-        user_input=f":f {IMAGE_SHORT}", comment=f"filter for {IMAGE_SHORT}", look_fors=[IMAGE_SHORT]
+        user_input=f":f {IMAGE_SHORT}",
+        comment=f"filter for {IMAGE_SHORT}",
+        look_fors=[IMAGE_SHORT],
     ),
     Step(user_input=":0", comment="goto info menu", look_fors=["Everything"]),
     Step(user_input=":0", comment="goto Image information", look_fors=["architecture:"]),
@@ -54,7 +56,6 @@ class BaseClass:
             yield tmux_session
 
     def test(self, request, tmux_session, step):
-        # pylint: disable=too-many-locals
         """Run the tests for images, mode and ``ee`` set in child class."""
 
         if step.search_within_response is SearchFor.HELP:
@@ -100,5 +101,5 @@ class BaseClass:
                 expected_output = json.load(infile)["output"]
 
             assert expected_output == received_output, "\n" + "\n".join(
-                difflib.unified_diff(expected_output, received_output, "expected", "received")
+                difflib.unified_diff(expected_output, received_output, "expected", "received"),
             )

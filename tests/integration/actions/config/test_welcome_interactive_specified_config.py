@@ -2,12 +2,12 @@
 """
 import pytest
 
-from .base import CONFIG_FIXTURE
-from .base import BaseClass
 from ..._interactions import Command
 from ..._interactions import Step
 from ..._interactions import add_indicies
 from ..._interactions import step_id
+from .base import CONFIG_FIXTURE
+from .base import BaseClass
 
 
 CLI = Command(execution_environment=False).join()
@@ -18,7 +18,6 @@ steps = (
         user_input=":config",
         comment="enter config from welcome screen (no ee)",
         mask=False,
-        look_nots=["/home/runner"],
         look_fors=["YAML_FILENAME_EXTENSIONS", "['.yml', '.yaml', '.json']"],
     ),
     Step(user_input=":back", comment="return to welcome screen"),
@@ -26,7 +25,6 @@ steps = (
         user_input=":config -c " + CONFIG_FIXTURE,
         comment="enter config from welcome screen, custom config, (no ee)",
         mask=False,
-        look_nots=["/home/runner"],
         look_fors=["YAML_FILENAME_EXTENSIONS", "['.yahmool']"],
     ),
 )

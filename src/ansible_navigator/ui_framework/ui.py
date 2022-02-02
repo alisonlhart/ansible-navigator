@@ -1,7 +1,5 @@
 """the main UI renderer
 """
-
-# pylint: disable=too-many-lines
 import curses
 import json
 import logging
@@ -22,6 +20,8 @@ from typing import Pattern
 from typing import Tuple
 from typing import Union
 
+from .._yaml import human_dump
+from ..utils import templar
 from .colorize import Colorize
 from .colorize import rgb_to_ansi
 from .curses_defs import CursesLine
@@ -35,15 +35,10 @@ from .form_handler_text import FormHandlerText
 from .form_utils import warning_notification
 from .menu_builder import MenuBuilder
 from .ui_config import UIConfig
-from .._yaml import human_dump
-from ..utils import templar
 
 
 STND_KEYS = {"^f/PgUp": "page up", "^b/PgDn": "page down", "\u2191\u2193": "scroll", "esc": "back"}
 END_KEYS = {":help": "help"}
-
-# pylint: disable=inherit-non-class
-# pylint: disable=too-few-public-methods
 
 
 class Action(NamedTuple):
@@ -89,7 +84,6 @@ class Interaction(NamedTuple):
 
 class UserInterface(CursesWindow):
     # pylint: disable=too-many-instance-attributes
-    # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-arguments
 
     """The main UI class"""
@@ -115,7 +109,8 @@ class UserInterface(CursesWindow):
         super().__init__(ui_config=ui_config)
         self._color_menu_item: Callable[[int, str, Dict[str, Any]], Tuple[int, int]]
         self._colorizer = Colorize(
-            grammar_dir=self._ui_config.grammar_dir, theme_path=self._ui_config.theme_path
+            grammar_dir=self._ui_config.grammar_dir,
+            theme_path=self._ui_config.theme_path,
         )
         self._content_heading: Callable[[Any, int], Union[CursesLines, None]]
         self._default_colors = None
@@ -258,7 +253,7 @@ class UserInterface(CursesWindow):
                     string=left,
                     color=0,
                     decoration=curses.A_REVERSE,
-                )
+                ),
             )
             footer.append(
                 CursesLinePart(
@@ -266,7 +261,7 @@ class UserInterface(CursesWindow):
                     string=right,
                     color=0,
                     decoration=0,
-                )
+                ),
             )
         if self._status:
             # place the status to the far right -1 for the scrollbar
@@ -282,12 +277,17 @@ class UserInterface(CursesWindow):
                     string=status,
                     color=self._status_color,
                     decoration=curses.A_REVERSE,
-                )
+                ),
             )
         return tuple(footer)
 
     def _scroll_bar(
-        self, viewport_h: int, len_heading: int, menu_size: int, body_start: int, body_stop: int
+        self,
+        viewport_h: int,
+        len_heading: int,
+        menu_size: int,
+        body_start: int,
+        body_stop: int,
     ) -> None:
         """Add a scroll bar if the length of the content is longer than the viewport height.
 
@@ -304,7 +304,10 @@ class UserInterface(CursesWindow):
         for idx in range(int(start_scroll_bar), int(start_scroll_bar + len_scroll_bar)):
             lineno = idx + len_heading
             line_part = CursesLinePart(
-                column=self._screen_w - 1, string="\u2592", color=color, decoration=0
+                column=self._screen_w - 1,
+                string="\u2592",
+                color=color,
+                decoration=0,
             )
             self._add_line(
                 window=self._screen,
@@ -351,7 +354,6 @@ class UserInterface(CursesWindow):
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-statements
-        # pylint: disable=too-many-nested-blocks
         """show something on the screen
 
         :param lines: The lines to show
@@ -393,7 +395,10 @@ class UserInterface(CursesWindow):
                 line_index_str = str(line_index).rjust(index_width)
                 prefix = f"{line_index_str}\u2502"
                 self._add_line(
-                    window=self._screen, lineno=idx + len(heading), line=line, prefix=prefix
+                    window=self._screen,
+                    lineno=idx + len(heading),
+                    line=line,
+                    prefix=prefix,
                 )
 
             # Add the scroll bar
@@ -449,7 +454,9 @@ class UserInterface(CursesWindow):
                 return return_value
 
     def _template_match_action(
-        self, entry: str, current: Any
+        self,
+        entry: str,
+        current: Any,
     ) -> Union[Tuple[str, Action], Tuple[None, None]]:
         """attempt to template & match the user input against the regexen
         provided by each action
@@ -521,7 +528,7 @@ class UserInterface(CursesWindow):
         """
         if curses.COLORS > 16 and self._term_osc4_supprt:
             unique_colors = list(
-                set(chars["color"] for line in lines for chars in line if chars["color"])
+                set(chars["color"] for line in lines for chars in line if chars["color"]),
             )
             # start custom colors at 16
             for color in unique_colors:
@@ -535,7 +542,10 @@ class UserInterface(CursesWindow):
 
                     self._rgb_to_curses_color_idx[color] = curses_colors_idx
                     curses.init_color(
-                        curses_colors_idx, int(red * scale), int(green * scale), int(blue * scale)
+                        curses_colors_idx,
+                        int(red * scale),
+                        int(green * scale),
+                        int(blue * scale),
                     )
                     self._logger.debug(
                         "Added color: %s:%s",
@@ -606,7 +616,6 @@ class UserInterface(CursesWindow):
         return res
 
     def _show_obj_from_list(self, objs: List[Any], index: int, await_input: bool) -> Interaction:
-        # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-statements
@@ -729,7 +738,10 @@ class UserInterface(CursesWindow):
         return regex.search(str(value))
 
     def _get_heading_menu_items(
-        self, current: List, columns: List, indices
+        self,
+        current: List,
+        columns: List,
+        indices,
     ) -> Tuple[CursesLines, CursesLines]:
         """build the menu
 

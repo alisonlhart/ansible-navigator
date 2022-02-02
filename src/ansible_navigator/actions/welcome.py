@@ -1,11 +1,11 @@
 """:welcome"""
 import os
 
-from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 WELCOME = """
@@ -17,11 +17,13 @@ WELCOME = """
 class Action(App):
     """:welcome"""
 
-    # pylint: disable=too-few-public-methods
-
     KEGEX = r"^welcome$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:welcome`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="welcome")
 
     def run(self, interaction: Interaction, app: AppPublic) -> Interaction:

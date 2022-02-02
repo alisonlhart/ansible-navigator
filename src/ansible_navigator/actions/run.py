@@ -20,8 +20,6 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from . import _actions as actions
-from . import run_action
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -37,6 +35,8 @@ from ..utils import abs_user_path
 from ..utils import human_time
 from ..utils import remove_ansi
 from ..utils import round_half_up
+from . import _actions as actions
+from . import run_action
 
 
 RESULT_TO_COLOR = [
@@ -48,7 +48,8 @@ RESULT_TO_COLOR = [
 ]
 
 get_color = lambda word: next(  # noqa: E731
-    (x[1] for x in RESULT_TO_COLOR if re.match(x[0], word)), 0
+    (x[1] for x in RESULT_TO_COLOR if re.match(x[0], word)),
+    0,
 )
 
 
@@ -110,13 +111,13 @@ def content_heading(obj: Any, screen_w: int) -> Union[CursesLines, None]:
         detail = f"PLAY [{obj['play']}:{obj['__number']}] "
         stars = "*" * (screen_w - len(detail))
         heading.append(
-            tuple([CursesLinePart(column=0, string=detail + stars, color=0, decoration=0)])
+            tuple([CursesLinePart(column=0, string=detail + stars, color=0, decoration=0)]),
         )
 
         detail = f"TASK [{obj['task']}] "
         stars = "*" * (screen_w - len(detail))
         heading.append(
-            tuple([CursesLinePart(column=0, string=detail + stars, color=0, decoration=0)])
+            tuple([CursesLinePart(column=0, string=detail + stars, color=0, decoration=0)]),
         )
 
         if obj["__changed"] is True:
@@ -141,9 +142,9 @@ def content_heading(obj: Any, screen_w: int) -> Union[CursesLines, None]:
                         string=string,
                         color=color,
                         decoration=curses.A_UNDERLINE,
-                    )
-                ]
-            )
+                    ),
+                ],
+            ),
         )
         return tuple(heading)
     return None
@@ -190,15 +191,11 @@ class Action(App):
             (\s(?P<params_run>.*))?)
             $"""
 
-    def __init__(
-        self,
-        args: ApplicationConfiguration,
-        play_columns: List = PLAY_COLUMNS,
-        task_list_columns: List = TASK_LIST_COLUMNS,
-        content_key_filter: Callable = filter_content_keys,
-    ):
-        # pylint: disable=dangerous-default-value
-        # for display purposes use the 4: of the uuid
+    def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:run`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="run")
 
         self._subaction_type: str
@@ -211,13 +208,13 @@ class Action(App):
         self._plays = Step(
             name="plays",
             tipe="menu",
-            columns=play_columns,
+            columns=PLAY_COLUMNS,
             value=[],
             show_func=self._play_stats,
             select_func=self._task_list_for_play,
         )
-        self._task_list_columns = task_list_columns
-        self._content_key_filter = content_key_filter
+        self._task_list_columns: List[str] = TASK_LIST_COLUMNS
+        self._content_key_filter: Callable = filter_content_keys
 
     @property
     def mode(self):
@@ -228,7 +225,7 @@ class Action(App):
                 self._args.mode == "stdout",
                 self._args.playbook_artifact_enable,
                 self._args.app != "replay",
-            )
+            ),
         ):
             return "stdout_w_artifact"
         return self._args.mode
@@ -253,13 +250,11 @@ class Action(App):
         return self.runner.ansible_runner_instance.rc
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
-        # pylint: disable=too-many-branches
         """run :run or :replay
 
         :param interaction: The interaction from the user
         :param app: The app instance
-        :return: The pending :class:`~ansible_navigator.ui_framework.ui.Interaction` or
-            :data:`None`
+        :return: The pending interaction or none
         """
 
         self._prepare_to_run(app, interaction)
@@ -295,7 +290,8 @@ class Action(App):
                     self.steps.append(self._plays)
                 else:
                     self._logger.debug(
-                        "No steps remaining for '%s' returning to calling app", self._name
+                        "No steps remaining for '%s' returning to calling app",
+                        self._name,
                     )
                     break
 
@@ -319,7 +315,7 @@ class Action(App):
         # Ensure the playbook and inventory are valid
 
         self._update_args(
-            ["run"] + shlex.split(self._interaction.action.match.groupdict()["params_run"] or "")
+            ["run"] + shlex.split(self._interaction.action.match.groupdict()["params_run"] or ""),
         )
 
         if isinstance(self._args.playbook, str):
@@ -365,7 +361,7 @@ class Action(App):
         if self.mode == "interactive":
             self._update_args(
                 ["replay"]
-                + shlex.split(self._interaction.action.match.groupdict()["params_replay"] or "")
+                + shlex.split(self._interaction.action.match.groupdict()["params_replay"] or ""),
             )
 
         artifact_file = self._args.playbook_artifact_replay
@@ -409,7 +405,8 @@ class Action(App):
                 return False
         else:
             self._logger.error(
-                "Incompatible artifact version, got '%s', compatible = '1.y.z'", version
+                "Incompatible artifact version, got '%s', compatible = '1.y.z'",
+                version,
             )
             return False
 
@@ -575,7 +572,7 @@ class Action(App):
 
         if isinstance(self._args.execution_environment_volume_mounts, list):
             kwargs.update(
-                {"container_volume_mounts": self._args.execution_environment_volume_mounts}
+                {"container_volume_mounts": self._args.execution_environment_volume_mounts},
             )
 
         if isinstance(self._args.container_options, list):
@@ -699,10 +696,10 @@ class Action(App):
                 {
                     tot: len([t for t in play["tasks"] if t["__result"].lower() == tot[2:]])
                     for tot in total
-                }
+                },
             )
             self._plays.value[idx]["__changed"] = len(
-                [t for t in play["tasks"] if t["__changed"] is True]
+                [t for t in play["tasks"] if t["__changed"] is True],
             )
             task_count = len(play["tasks"])
             self._plays.value[idx]["__task_count"] = task_count
@@ -719,9 +716,7 @@ class Action(App):
         """Looks like we're headed out of here
 
         :param interaction: the quit interaction
-        :type interaction: Interaction
         :return: a bool indicating whether of not it's safe to exit
-        :rtype: bool
         """
         self.update()
         if self.runner is not None and not self.runner.finished:

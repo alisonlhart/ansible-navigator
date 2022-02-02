@@ -12,8 +12,6 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
-from . import _actions as actions
-from . import run_action
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
@@ -25,6 +23,8 @@ from ..ui_framework import CursesLines
 from ..ui_framework import Interaction
 from ..ui_framework import dict_to_form
 from ..ui_framework import warning_notification
+from . import _actions as actions
+from . import run_action
 
 
 def color_menu(colno: int, colname: str, entry: Dict[str, Any]) -> Tuple[int, int]:
@@ -70,9 +70,9 @@ def content_heading(obj: Any, screen_w: int) -> Union[CursesLines, None]:
                     string=string,
                     color=0,
                     decoration=curses.A_UNDERLINE,
-                )
-            ]
-        )
+                ),
+            ],
+        ),
     )
     return tuple(heading)
 
@@ -94,12 +94,15 @@ class Menu(list):
 class Action(App):
     """:inventory"""
 
-    # pylint:disable=too-few-public-methods
     # pylint: disable=too-many-instance-attributes
 
     KEGEX = r"^i(?:nventory)?(\s(?P<params>.*))?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:images`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="inventory")
 
         self.__inventory: Dict[Any, Any] = {}
@@ -142,11 +145,9 @@ class Action(App):
             if os.path.isdir(inventory):
                 mtimes.append(
                     max(
-                        (
-                            os.path.getmtime(e)
-                            for e in glob.glob(os.path.join(inventory, "**"), recursive=True)
-                        )
-                    )
+                        os.path.getmtime(e)
+                        for e in glob.glob(os.path.join(inventory, "**"), recursive=True)
+                    ),
                 )
             elif os.path.isfile(inventory):
                 mtimes.append(os.path.getmtime(inventory))
@@ -159,7 +160,6 @@ class Action(App):
         self._calling_app.update()
 
     def run(self, interaction: Interaction, app: AppPublic) -> Union[Interaction, None]:
-        # pylint: disable=too-many-branches
         """Handle :inventory
 
         :param interaction: The interaction from the user
@@ -264,7 +264,8 @@ class Action(App):
             description="Explore each inventory group and group members members",
         )
         hosts = MenuEntry(
-            title="Browse hosts", description="Explore the inventory with a list of all hosts"
+            title="Browse hosts",
+            description="Explore the inventory with a list of all hosts",
         )
 
         step = Step(
@@ -292,7 +293,7 @@ class Action(App):
             menu = Menu()
             taxonomy = "\u25B8".join(
                 ["all"]
-                + [step.selected["__name"] for step in self.steps if step.name == "group_menu"]
+                + [step.selected["__name"] for step in self.steps if step.name == "group_menu"],
             )
 
             columns = ["__name", "__taxonomy", "__type"]
@@ -381,7 +382,7 @@ class Action(App):
     def _build_inventory_list(self) -> None:
 
         self._update_args(
-            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or "")
+            [self._name] + shlex.split(self._interaction.action.match.groupdict()["params"] or ""),
         )
 
         if isinstance(self._args.inventory, list):
@@ -422,7 +423,6 @@ class Action(App):
             if form.cancelled:
                 return
 
-            # pylint: disable=not-an-iterable
             inventories = [
                 field.value
                 for field in form.fields
@@ -516,7 +516,7 @@ class Action(App):
 
         if isinstance(self._args.execution_environment_volume_mounts, list):
             kwargs.update(
-                {"container_volume_mounts": self._args.execution_environment_volume_mounts}
+                {"container_volume_mounts": self._args.execution_environment_volume_mounts},
             )
 
         if isinstance(self._args.container_options, list):

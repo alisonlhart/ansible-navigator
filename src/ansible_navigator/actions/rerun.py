@@ -2,13 +2,10 @@
 import copy
 import logging
 
-from . import _actions as actions
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
-
-
-# pylint: disable=protected-access
+from . import _actions as actions
 
 
 @actions.register
@@ -20,6 +17,10 @@ class Action:
     KEGEX = r"^rr|rerun?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:rerun`` action.
+
+        :param args: The current settings for the application
+        """
         self._args = args
         self._logger = logging.getLogger(__name__)
 

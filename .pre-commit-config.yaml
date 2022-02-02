@@ -1,5 +1,8 @@
 ---
 
+default_language_version:
+  # ensures that we get same behavior on CI(s) as on local machines
+  python: python3.10
 repos:
 - repo: https://github.com/asottile/add-trailing-comma.git
   rev: v2.2.1
@@ -7,18 +10,13 @@ repos:
   - id: add-trailing-comma
     args:
     - --py36-plus
-    exclude: |
-      (?x)
-      ^
-        .*
-      $
     stages: ["manual"]
 
 - repo: https://github.com/PyCQA/isort
   rev: 5.10.1
   hooks:
   - id: isort
-    stages: ["manual"]
+    name: Sort import statements using isort
 
 - repo: https://github.com/Lucas-C/pre-commit-hooks.git
   rev: v1.1.10
@@ -31,7 +29,7 @@ repos:
       $
 
 - repo: https://github.com/pre-commit/pre-commit-hooks.git
-  rev: v4.0.1
+  rev: v4.1.0
   hooks:
   # Side-effects:
   - id: trailing-whitespace
@@ -172,6 +170,23 @@ repos:
     language_version: python3
     additional_dependencies:
     - flake8-2020 >= 1.6.0
+    - flake8-isort >= 4.1.1
+  - id: flake8
+    alias: flake8-rule-candidates
+    name: An unenforced set of flake8 candidate rule candidates
+    args:
+    - --ignore=
+    - --extend-ignore=
+    - >-
+      --select=
+      D,
+      DAR,
+    language_version: python3
+    additional_dependencies:
+    - darglint
+    - flake8-docstrings
+    stages:
+    - manual
   - id: flake8
     alias: flake8-extended
     name: >-
@@ -186,9 +201,23 @@ repos:
     - manual
 
 - repo: https://github.com/pre-commit/mirrors-mypy.git
-  rev: v0.910-1
+  rev: v0.931
   hooks:
-  - id: mypy
+  # NOTE: Here MyPy is executed twice -- once for the highest and once
+  # NOTE: for the lowest supported version. They are hardcoded in the
+  # NOTE: hook invocations below. Whenever one of these versions needs
+  # NOTE: to be updated, the values in the `alias` and `name` fields
+  # NOTE: should be adjusted along with the `--python-version` CLI
+  # NOTE: option.
+  # NOTE: The external developer environment is configured to only run
+  # NOTE: the check with the lowest version on the tox side while the
+  # NOTE: CI automations run both checks. Whenever the versions are
+  # NOTE: updated in this config, a symmetric action must be performed
+  # NOTE: in `tox.ini` as well.
+  - &_base-mypy-setup-map
+    id: mypy
+    alias: mypy-py310
+    name: MyPy, for Python 3.10
     additional_dependencies:
     - lxml == 4.6.4  # needed for `--txt-report`
     - types-docutils
@@ -200,6 +229,7 @@ repos:
     - --namespace-packages
     - --non-interactive
     - --pretty
+    - --python-version=3.10
     - --show-column-numbers
     - --show-error-codes
     - --show-error-context
@@ -212,22 +242,58 @@ repos:
     - src/
     - tests/
     pass_filenames: false
+  - <<: *_base-mypy-setup-map
+    alias: mypy-py36
+    name: MyPy, for Python 3.6
+    additional_dependencies:
+    - lxml == 4.6.4  # needed for `--txt-report`
+    - types-dataclasses
+    - types-docutils
+    - types-PyYAML
+    args:
+    # FIXME: get rid of missing imports ignore
+    - --ignore-missing-imports
+    - --install-types
+    - --namespace-packages
+    - --non-interactive
+    - --pretty
+    - --python-version=3.6
+    - --show-column-numbers
+    - --show-error-codes
+    - --show-error-context
+    #- --strict
+    #- --strict-optional
+    - --txt-report
+    - .tox/.tmp/.mypy/
+    - docs/
+    - share/
+    - src/
+    - tests/
 
-- repo: local
+- repo: https://github.com/pycqa/pylint.git
+  rev: v2.12.2
   hooks:
   - id: pylint
-    language: system
-    name: PyLint
-    files: \.py$
-    entry: python -m pylint
     args:
     # FIXME: uncomment once it doesn't have violations
     # - docs/
     - share/
     - src/
     - tests/
+    additional_dependencies:
+    - ansible-core
+    # astroid is a transitive dep for pylint, > 2.9.0 introduces false no-name-in-module and no-member errors
+    # attempt to remove this when astroid 2.9.4 or later is released
+    # related: https://github.com/PyCQA/pylint/issues/5131
+    # related: https://github.com/ansible/ansible-navigator/issues/772
+    - astroid == 2.9.0
+    - ansible-runner
+    - jinja2
+    - libtmux
+    - onigurumacffi
+    - pylint-pytest < 1.1.0
+    - setuptools-scm
+    - sphinx
     pass_filenames: false
-    stages:
-    - manual
 
 ...

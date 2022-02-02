@@ -8,8 +8,8 @@ from unittest import mock
 import pytest
 
 from ansible_navigator import cli
-from ._cli2runner import Cli2Runner
 from ..defaults import FIXTURES_DIR
+from ._cli2runner import Cli2Runner
 
 
 test_data = [
@@ -83,7 +83,8 @@ class Test(Cli2Runner):
         with mock.patch("sys.argv", params):
             with mock.patch.dict(os.environ, {"ANSIBLE_NAVIGATOR_CONFIG": cfg_path}):
                 with mock.patch.dict(
-                    os.environ, {"ANSIBLE_NAVIGATOR_COLLECTION_DOC_CACHE_PATH": coll_cache_path}
+                    os.environ,
+                    {"ANSIBLE_NAVIGATOR_COLLECTION_DOC_CACHE_PATH": coll_cache_path},
                 ):
                     with mock.patch.dict(os.environ, expected):
                         with pytest.raises(Exception, match="called"):

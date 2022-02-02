@@ -1,21 +1,23 @@
 """:stdout"""
 
-from . import _actions as actions
 from ..app import App
 from ..app_public import AppPublic
 from ..configuration_subsystem import ApplicationConfiguration
 from ..ui_framework import Interaction
+from . import _actions as actions
 
 
 @actions.register
 class Action(App):
     """:stdout"""
 
-    # pylint: disable=too-few-public-methods
-
     KEGEX = r"^st(?:dout)?$"
 
     def __init__(self, args: ApplicationConfiguration):
+        """Initialize the ``:stdout`` action.
+
+        :param args: The current settings for the application
+        """
         super().__init__(args=args, logger_name=__name__, name="stdout")
 
     def run(self, interaction: Interaction, app: AppPublic) -> Interaction:

@@ -4,16 +4,17 @@ import difflib
 import json
 import os
 
+from copy import copy
 from typing import Optional
 
 import pytest
 
+from ....defaults import FIXTURES_DIR
 from ..._common import fixture_path_from_request
 from ..._common import update_fixtures
 from ..._interactions import SearchFor
 from ..._interactions import Step
 from ..._tmux_session import TmuxSession
-from ....defaults import FIXTURES_DIR
 
 
 # run playbook
@@ -28,16 +29,19 @@ base_steps = (
     Step(user_input=":0", comment="task-1 details"),
     Step(user_input=":doc", comment="doc for task", look_fors=["module: debug"]),
     Step(
-        user_input=":{{ examples }}", comment="dig examples", look_fors=["ansible.builtin.debug:"]
+        user_input=":{{ examples }}",
+        comment="dig examples",
+        look_fors=["ansible.builtin.debug:"],
     ),
     Step(user_input=":back", comment="show doc", look_fors=["module: debug"]),
     Step(user_input=":back", comment="show task"),
     Step(
         user_input=":open {{ task_path }}",
         comment="goto vi",
-        search_within_response="---",
-        look_fors=["---"],
+        search_within_response="name: run integration test play-1",
+        look_fors=["name: run integration test play-1"],
     ),
+    Step(user_input=":q!", comment="exit vi"),
 )
 
 
@@ -79,10 +83,11 @@ class BaseClass:
         else:
             search_within_response = step.search_within_response
 
-        received_output = tmux_session.interaction(
+        unmasked_output = tmux_session.interaction(
             value=step.user_input,
             search_within_response=search_within_response,
         )
+        received_output = copy(unmasked_output)
 
         if step.mask:
             # mask out some configuration that is subject to change each run
@@ -125,5 +130,5 @@ class BaseClass:
                 expected_output = json.load(infile)["output"]
 
             assert expected_output == received_output, "\n" + "\n".join(
-                difflib.unified_diff(expected_output, received_output, "expected", "received")
+                difflib.unified_diff(expected_output, received_output, "expected", "received"),
             )

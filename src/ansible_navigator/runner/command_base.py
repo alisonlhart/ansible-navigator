@@ -12,9 +12,7 @@ from .base import Base
 
 
 class CommandBase(Base):
-    # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-arguments
-    # pylint: disable=too-many-instance-attributes
 
     """Base class for runner command interaction"""
 
@@ -67,7 +65,7 @@ class CommandBase(Base):
 
         if self._navigator_mode == "stdout":
             self._runner_args.update(
-                {"input_fd": sys.stdin, "output_fd": sys.stdout, "error_fd": sys.stderr}
+                {"input_fd": sys.stdin, "output_fd": sys.stdout, "error_fd": sys.stderr},
             )
 
         for key, value in self._runner_args.items():

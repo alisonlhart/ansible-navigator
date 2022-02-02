@@ -2,11 +2,11 @@
 """
 import pytest
 
-from .base import BaseClass
 from ..._interactions import Command
 from ..._interactions import Step
 from ..._interactions import add_indicies
 from ..._interactions import step_id
+from .base import BaseClass
 
 
 CLI = Command(execution_environment=False).join()
@@ -17,7 +17,6 @@ steps = (
         user_input=":config",
         comment="enter config from welcome screen",
         mask=False,
-        look_nots=["/home/runner"],
         look_fors=["ANSIBLE_CACHE_PLUGIN_TIMEOUT", "42"],
     ),
     Step(user_input=":back", comment="return to welcome screen"),

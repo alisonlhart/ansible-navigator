@@ -13,7 +13,6 @@ from .ui_config import UIConfig
 
 
 if TYPE_CHECKING:
-    # pylint: disable= no-name-in-module
     from _curses import _CursesWindow
 
     Window = _CursesWindow
@@ -49,6 +48,10 @@ class CursesWindow:
     """abstraction for a curses window"""
 
     def __init__(self, ui_config: UIConfig):
+        """Initialize a curses window.
+
+        :param ui_config: The current user interface configuration
+        """
         self._logger = logging.getLogger(__name__)
 
         self._screen: Window
@@ -105,7 +108,11 @@ class CursesWindow:
             self._logger.error("Errors setting up terminal, check TERM value")
 
     def _add_line(
-        self, window: Window, lineno: int, line: CursesLine, prefix: Union[str, None] = None
+        self,
+        window: Window,
+        lineno: int,
+        line: CursesLine,
+        prefix: Union[str, None] = None,
     ) -> None:
         """add a line to a window
 

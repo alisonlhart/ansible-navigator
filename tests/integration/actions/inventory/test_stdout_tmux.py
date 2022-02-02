@@ -1,12 +1,12 @@
 """Tests for inventory from CLI, stdout."""
 import pytest
 
-from .base import ANSIBLE_INVENTORY_FIXTURE_DIR
-from .base import BaseClass
 from ..._interactions import Command
 from ..._interactions import SearchFor
 from ..._interactions import Step
 from ..._interactions import add_indicies
+from .base import ANSIBLE_INVENTORY_FIXTURE_DIR
+from .base import BaseClass
 
 
 class StdoutCommand(Command):
@@ -67,7 +67,7 @@ stdout_tests = (
             execution_environment=True,
         ).join(),
         look_fors=[
-            "--hi or --help-inventory is valid only when 'mode' argument is set to 'stdout'"
+            "--hi or --help-inventory is valid only when 'mode' argument is set to 'stdout'",
         ],
     ),
     ShellCommand(
@@ -78,7 +78,7 @@ stdout_tests = (
             execution_environment=False,
         ).join(),
         look_fors=[
-            "--hi or --help-inventory is valid only when 'mode' argument is set to 'stdout'"
+            "--hi or --help-inventory is valid only when 'mode' argument is set to 'stdout'",
         ],
     ),
 )

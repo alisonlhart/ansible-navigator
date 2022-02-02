@@ -37,9 +37,16 @@ class Constants(Enum):
         " applying previous cli common entries, this indicates"
         " that it will only be used if the subcommand is the same"
     )
+<<<<<<< HEAD
     SENTINEL = "Indicates a nonvalue"
     USER_CFG = "User-provided configuration file"
     USER_CLI = "Provided at command line"
+=======
+    SEARCH_PATH = "Found using search path"
+    SENTINEL = "indicates a nonvalue"
+    USER_CFG = "user provided configuration file"
+    USER_CLI = "cli parameters"
+>>>>>>> origin/feature/settings-subcommand
 
 
 class SettingsEntryValue(SimpleNamespace):
@@ -52,7 +59,6 @@ class SettingsEntryValue(SimpleNamespace):
 
 
 class SettingsEntry(SimpleNamespace):
-    # pylint: disable=too-few-public-methods
     """One entry in the configuration
 
     apply_to_subsequent_cli: Should this be applied to future CLIs parsed
@@ -67,6 +73,7 @@ class SettingsEntry(SimpleNamespace):
     subcommands: which subcommand should this be used for
     value: the SettingsEntryValue for the entry
     """
+
     name: str
     short_description: str
     value: SettingsEntryValue

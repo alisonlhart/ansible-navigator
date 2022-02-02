@@ -49,6 +49,14 @@
 [tool.black]
 line-length = 100
 
+[tool.coverage.run]
+    branch = true
+    source_pkgs = ["ansible_navigator"]
+    source = ["share"]
+
+[tool.coverage.report]
+    show_missing = true
+
 [tool.isort]
 force_single_line = true # Force from .. import to be 1 per line, minimizing changes at time of implementation
 known_first_party = "ansible_navigator, key_value_store" # No effect at implementation, here anticipating future benefit
@@ -56,15 +64,26 @@ lines_after_imports = 2 # Ensures consistency for cases when there's variable vs
 lines_between_types = 1 # Separate import/from with 1 line, minimizing changes at time of implementation
 no_lines_before = "LOCALFOLDER"  # Keeps local imports bundled with first-party
 profile = "black" # Avoid conflict with black
-reverse_relative = true # Import local prior to parent
 skip_glob = ["tests/fixtures/common/collections*"] # Skip ansible content due to ansible-test sanity ruleset
 
 [tool.pylint]
     [tool.pylint.master]
-    ignore="tm_tokenize"
+    # tm_tokenize is virtually vendored and shouldn't be linted as such
+    ignore = "tm_tokenize"
+
+    load-plugins = [
+      "pylint_pytest",  # suppresses false-positive violations in pytest tests
+    ]
 
     [tool.pylint.messages_control]
-    disable = "C0330, C0326"
+    disable = [
+      "duplicate-code",
+      "fixme",
+      "unsubscriptable-object",
+    ]
+    enable = [
+      "useless-suppression",  # Identify unneeded pylint disable statements
+    ]
 
     [tool.pylint.format]
     max-line-length = 100

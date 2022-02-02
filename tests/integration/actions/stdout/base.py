@@ -6,10 +6,10 @@ import os
 
 import pytest
 
+from ....defaults import FIXTURES_DIR
 from ..._common import fixture_path_from_request
 from ..._common import update_fixtures
 from ..._tmux_session import TmuxSession
-from ....defaults import FIXTURES_DIR
 
 
 TEST_FIXTURE_DIR = os.path.join(FIXTURES_DIR, "integration/actions/stdout")
@@ -40,7 +40,6 @@ class BaseClass:
 
     def test(self, request, tmux_session, index, user_input, comment, search_within_response):
         # pylint:disable=too-many-arguments
-        # pylint: disable=too-many-locals
         """Run the tests for stdout, mode and EE set in child class."""
         assert os.path.exists(ANSIBLE_PLAYBOOK)
         assert os.path.exists(TEST_CONFIG_FILE)
@@ -58,5 +57,5 @@ class BaseClass:
         with open(file=f"{dir_path}/{file_name}", encoding="utf-8") as infile:
             expected_output = json.load(infile)["output"]
         assert expected_output == received_output, "\n" + "\n".join(
-            difflib.unified_diff(expected_output, received_output, "expected", "received")
+            difflib.unified_diff(expected_output, received_output, "expected", "received"),
         )

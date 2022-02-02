@@ -30,6 +30,14 @@ class MenuBuilder:
         color_menu_item: Callable,
         ui_config: UIConfig,
     ):
+        """Initialize the menu builder.
+
+        :param pbar_width:  The width of the progress bar
+        :param screen_w: The current screen width
+        :param number_colors: The number of colors the current terminal supports
+        :param color_menu_item: The callback for adding color to menu entries
+        :param ui_config: The current user interface configuration
+        """
         # pylint: disable=too-many-arguments
         self._number_colors = number_colors
         self._pbar_width = pbar_width
@@ -115,7 +123,10 @@ class MenuBuilder:
                 decoration=curses.A_UNDERLINE,
             )
         return CursesLinePart(
-            column=col_starts[colno], string=adj_entry, color=0, decoration=curses.A_UNDERLINE
+            column=col_starts[colno],
+            string=adj_entry,
+            color=0,
+            decoration=curses.A_UNDERLINE,
         )
 
     def _menu_lines(self, dicts: List[Dict], menu_layout: Tuple[List, ...], indices) -> CursesLines:
@@ -152,7 +163,11 @@ class MenuBuilder:
         )
 
     def _menu_line_part(
-        self, colno: int, coltext: Any, dyct: dict, menu_layout: Tuple[List, ...]
+        self,
+        colno: int,
+        coltext: Any,
+        dyct: dict,
+        menu_layout: Tuple[List, ...],
     ) -> CursesLinePart:
         """Generate one menu line part
 
