@@ -59,6 +59,10 @@ class HumanDumper(Dumper):
     This deviates from the base to dump a multiline string in a human readable format.
     """
 
+    def ignore_aliases(self, _data: Any) -> bool:
+        # Return true to disable use of anchors and aliases
+        return True
+
     def represent_scalar(
         self,
         tag: str,
