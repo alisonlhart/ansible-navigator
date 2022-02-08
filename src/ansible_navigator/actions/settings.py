@@ -200,19 +200,34 @@ class Action(App):
 
     def _transform_current_settings(self):
         """Transform the current settings into a list of dictionaries."""
-        settings = []
-        # settings.append()
-        # default: {CWD}/ansible-navigator.{ext} or {HOME}/.ansible-navigator.{ext} where ext is yml, yaml or json
-        # description: The path to the settings file
-        # env_var: ANSIBLE_NAVIGATOR_CONFIG
-        # source: settings source
+        
+        new_entry = HumanReadableEntry()
+        new_entry.name = "current_settings_file"
 
+        current_settings_file = self.app.args.internals.settings_file_path or "None"
+        new_entry.current_settings_file = current_settings_file
+        new_entry.current_value = current_settings_file
+        new_entry.default_value = (
+            "{CWD}/ansible-navigator.{ext} or {HOME}/.ansible-navigator.{ext}" 
+            " where ext is yml, yaml or json"
+            )
+        new_entry.description = "The path to the current settings file"
+        new_entry.env_var = "ANSIBLE_NAVIGATOR_CONFIG"
+        new_entry.settings_file_sample = "Not applicable"
+        new_entry.source = self.app.args.internals.settings_source.value
+        if self.app.args.internals.settings_source is Constants.SEARCH_PATH:
+            new_entry.default = str(True)
+        elif self.app.args.internals.settings_source is Constants.NONE or self.app.args.internals.settings_source is Constants.ENVIRONMENT_VARIABLE:
+            new_entry.default = str(False)
+        settings = [vars(new_entry)]
+     
         for current_entry in self.app.args.entries:
             new_entry = HumanReadableEntry()
 
             # Build the column data
             new_entry.name = current_entry.name
             new_entry.description = current_entry.short_description
+            new_entry.current_settings_file = current_settings_file
             new_entry.source = current_entry.value.source.value
             new_entry.env_var = current_entry.environment_variable(
                 self.app.args.application_name.upper()
@@ -255,6 +270,6 @@ class Action(App):
                 )
             )
 
-            settings.append(new_entry.__dict__)
-        # sort list based on name
-        self._settings = settings
+            settings.append(vars(new_entry))
+        sorted_settings = sorted(settings, key=lambda d: d['name'])
+        self._settings = sorted_settings

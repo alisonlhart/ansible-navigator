@@ -29,7 +29,7 @@ class Constants(Enum):
     ALL = "All the things"
     DEFAULT_CFG = "Defaults"
     ENVIRONMENT_VARIABLE = "Environment variable"
-    NONE = "None of the things"
+    NONE = "None"
     NOT_SET = "Value has not been set"
     PREVIOUS_CLI = "Previous cli command"
     SAME_SUBCOMMAND = (
@@ -37,6 +37,7 @@ class Constants(Enum):
         " applying previous cli common entries, this indicates"
         " that it will only be used if the subcommand is the same"
     )
+    SEARCH_PATH = "Found using search path"
     SENTINEL = "Indicates a nonvalue"
     USER_CFG = "User-provided configuration file"
     USER_CLI = "Provided at command line"
