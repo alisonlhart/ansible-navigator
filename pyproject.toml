@@ -221,6 +221,9 @@ filterwarnings = [
   "error",
   # https://github.com/ansible/ansible-runner/issues/1246
   "ignore::ResourceWarning:ansible_runner",
+  # Python 3.12+ catches more unclosed file warnings
+  "ignore::ResourceWarning",
+  "ignore::pytest.PytestUnraisableExceptionWarning",
   # Python 3.12+ emits deprecation warnings for importlib.abc.Traversable
   # This is used in v3.4.1 but deprecated; ignore for backward compatibility testing
   "ignore:'importlib.abc.Traversable' is deprecated:DeprecationWarning",
@@ -229,6 +232,8 @@ filterwarnings = [
   "ignore:.*Pane.*deprecated.*:DeprecationWarning",
   "ignore:Deprecated.*Pane.*:DeprecationWarning",
   "ignore:.*Session.*deprecated.*:DeprecationWarning",
+  # ansible-runner uses deprecated datetime.datetime.utcnow()
+  "ignore:datetime.datetime.utcnow.*:DeprecationWarning",
 ]
 
 [tool.ruff]
